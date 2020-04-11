@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 
-let notes = require("./db.json");
+const notes = require("./db.json");
 let lastId = notes.length > 0 ? notes[notes.length - 1].id : 0;
 const NOTES_FILE = path.join(__dirname, "db.json");
 
@@ -17,7 +17,11 @@ function addNote(note, cb) {
 }
 
 function deleteNote(id, cb) {
-  notes = notes.filter(note => note.id !== parseInt(id));
+  const index = notes.findIndex(note => note.id === parseInt(id));
+  if (index < 0) {
+    return cb(new Error("Note not found"));
+  }
+  notes.splice(index, 1);
 
   writeNotes(cb);
 }
